@@ -1,0 +1,39 @@
+{
+ "name": "ruler-compass",
+ "description": "create and execute formal geometric constructions",
+ "version": "0.0.0",
+ "homepage": "https://github.com/dvberkel/ruler-compass",
+ "author": {
+  "name": "Daan van Berkel",
+  "email": "daan.v.berkel.1980@gmail.com",
+  "url": "http://dvberkel.github.com/"
+ },
+ "repository": {
+  "type": "git",
+  "url": "git://github.com/dvberkel/ruler-compass.git"
+ },
+ "bugs": {
+  "url": "https://github.com/dvberkel/ruler-compass/issues"
+ },
+ "licenses": [
+  {
+   "type": "MIT",
+   "url": "https://github.com/dvberkel/ruler-compass/blob/master/LICENSE-MIT"
+  }
+ ],
+ "engines": {
+  "node": ">=0.8.x",
+  "npm": ">=1.1.x"
+ },
+ "scripts": {
+ },
+ "dependencies": {
+ },
+ "devDependencies": {
+  "grunt": "~0.3.17"
+ },
+ "keywords": [
+  "mathematics",
+  "geometry"
+ ]
+}
