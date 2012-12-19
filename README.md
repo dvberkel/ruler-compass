@@ -1,4 +1,4 @@
-Ruler Compass
+Ruler Compass [![Build Status](https://travis-ci.org/dvberkel/ruler-compass.png?branch=master)](https://travis-ci.org/dvberkel/ruler-compass)
 =============
 
 Ruler and Compass is a project to create and visualize formal ruler
