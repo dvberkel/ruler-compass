@@ -1,6 +1,8 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
+    grunt.loadNpmTasks('grunt-jasmine-runner');
+
     // Project configuration.
     grunt.initConfig({
         pkg: '<json:package.json>',
@@ -13,6 +15,17 @@ module.exports = function(grunt) {
         },
         lint: {
             files: ['grunt.js', 'src/**/*.js', 'spec/**/*.js']
+        },
+        jasmine: {
+            src: [/* defined in the template */],
+            specs: [/* defined in the template */],
+            timeout: 10000,
+            template: {
+                src: "spec/template/_SpecRunner.tmpl"
+            },
+            junit: {
+                output: "test-results"
+            }
         },
         concat: {
             dist: {
@@ -45,7 +58,10 @@ module.exports = function(grunt) {
                 browser: true
             },
             globals: {
-                jQuery: true
+                jQuery: true,
+                describe: false,
+                it: false,
+                expect: false
             }
         },
         uglify: {}
