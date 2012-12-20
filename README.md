@@ -37,6 +37,36 @@ keyboards. We will use the following alternatives:
 </tbody>
 </table>
 
+Development
+-----------
+
+We use [npm][4] to manage our dependencies and use [grunt][5] to
+automate common occuring tasks. Run the following command to install
+all the dependencies except [phantomjs][6]
+
+    npm install
+
+[phantomjs][6] is used for headless running the [jasmine][7]
+specification and needs to be available on the path. Go to the
+[phantomjs download][8] page for intructions to acquire phantomjs.
+
+### Testing
+
+    npm test
+
+executes the `grunt jasmine` task. This generates a `_SpecRunner.html`
+from `spec/template/_SpecRunner.tmpl`. When creating new
+specifications they should be referenced in the template file.
+
+The generated `_SpecRunner.html` can be viewed in a browser for an
+overview of passing/failing tests. Make sure that it is up to date by
+running the `npm test` (or equivalently `grunt jasmine`) often.
+
 [1]: http://worrydream.com/ "Bret Victor's homepage"
 [2]: http://vimeo.com/36579366 "a Vimeo video showing Bret Victor's talk on 'Inventing on Principle'"
 [3]: http://www.springer.com/mathematics/geometry/book/978-0-387-98276-2 "Geometric Constructions on Springer website"
+[4]: https://npmjs.org/ "Node Package Manager homepage"
+[5]: http://gruntjs.com/ "grunt.js homepage"
+[6]: http://phantomjs.org "phantomjs homepage"
+[7]: http://pivotal.github.com/jasmine/ "Jasmine homepage"
+[8]: http://phantomjs.org/download.html "Download instructions for phantomjs"
