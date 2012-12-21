@@ -29,7 +29,7 @@ module.exports = function(grunt) {
         },
         concat: {
             dist: {
-                src: ['<banner:meta.banner>', 'src/namespace.js', 'src/Environment.js'],
+                src: ['<banner:meta.banner>', 'src/namespace.js', 'src/Construction.js', 'src/Environment.js'],
                 dest: 'dist/<%= pkg.name %>.js'
             }
         },

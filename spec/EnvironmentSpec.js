@@ -1,13 +1,41 @@
 describe("Ruler Compass Enviroment", function(){
+    var environmentView;
+
     beforeEach(function(){
-	loadFixtures("viewport.html");
+        loadFixtures("viewport.html");
+    });
+
+    beforeEach(function(){
+        environmentView = new Geometry.EnvironmentView({ el : $("#viewport") });
     });
 
     it("should provide various parts", function(){
-	new Geometry.EnvironmentView({ el : $("#viewport") });
+        expect($(".parts")).toExist();
+        expect($(".code")).toExist();
+        expect($(".result")).toExist();
+    });
 
-	expect($(".parts")).toExist();
-	expect($(".code")).toExist();
-	expect($(".result")).toExist();
+    describe("Parts", function(){
+        it("should provide 'Free' Objects", function(){
+            expect($(".parts .free")).toExist();
+        });
+
+        describe("Free", function(){
+            it("should hold 'point'", function(){
+                expect($(".parts .free .point")).toExist();
+            });
+
+            describe("point", function(){
+                it("should be designated with 'Point'", function(){
+                    expect($(".parts .free .point").text()).toBe("Point");
+                });
+
+                it("should create a code point", function(){
+                    $(".parts .free .point").click();
+
+                    expect($(".code .point").size()).toBe(1);
+                });
+            });
+        });
     });
 });

@@ -1,4 +1,4 @@
-/*! ruler-compass - v0.0.0 - 2012-12-20
+/*! ruler-compass - v0.0.0 - 2012-12-21
  * https://github.com/dvberkel/ruler-compass
  * Copyright (c) 2012 Daan van Berkel; Licensed MIT
  */
@@ -7,16 +7,106 @@ Geometry = {
     "version" : "0.0.0"
 };
 
+(function(_, Backbone, Geometry){
+    var ConstructionStep = Backbone.Model.extend({
+        
+    });
+
+    var Construction = Backbone.Collection.extend({
+        model: ConstructionStep,
+
+        append: function(step){
+            this.add(step);
+        }
+    });
+
+    Geometry.ConstructionStep = ConstructionStep;
+    Geometry.Construction = Construction;
+})(_, Backbone, Geometry);
 (function($, _, Backbone, Geometry){
     var EnvironmentView = Backbone.View.extend({
+        initialize : function(){
+            if (! this.model) {
+                this.model = new Geometry.Construction();
+            }
+            this.render();
+        },
+
+        render : function(){
+            new PartsView({ el : this.$el, model : this.model });
+            new CodeView({ el : this.$el, model : this.model });
+            $("<div class='result'/>").appendTo(this.$el);
+        }
+    });
+
+    var PartsView = Backbone.View.extend({
         initialize : function(){
             this.render();
         },
 
         render : function(){
-            $("<div class='parts'/>").appendTo(this.$el);
-            $("<div class='code'/>").appendTo(this.$el);
-            $("<div class='result'/>").appendTo(this.$el);
+            var parts = $("<div class='parts'/>");
+            parts.appendTo(this.$el);
+            new FreePartsView({ el : parts, model : this.model });
+        }
+    });
+
+    var FreePartsView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = $("<div class='free'/>");
+            container.appendTo(this.$el);
+            new PointPartView({ el : container, model : this.model });
+        }
+    });
+
+    var PointPartView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+        
+        render : function(){
+            var container = $("<span class='point'>Point</span>");
+            container.appendTo(this.$el);
+            var model = this.model;
+            container.click(function(){
+                model.append(new Geometry.ConstructionStep({}));
+            });
+        }
+    });
+
+    var CodeView = Backbone.View.extend({
+        initialize : function(){
+            this.model.on("add", function(step){
+                var container = this.container();
+                new CodeStepView({ el: container, model : step });
+            }, this);
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $("<div class='code'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function() {
+            $("<div class='point'/>").appendTo(this.$el);
         }
     });
 
