@@ -81,7 +81,55 @@
         },
 
         render : function() {
-            $("<div class='point'/>").appendTo(this.$el);
+            var container = this.container();
+            new CodeStepNameView({ el : container, model : this.model });
+            new CodeStepDescriptionView({ el : container, model : this.model });
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $("<div class='point'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepNameView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+            container.empty().text(this.model.name());
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $("<span class='name'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepDescriptionView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+            container.empty().text("(0,0)");
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $("<span class='description'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
         }
     });
 

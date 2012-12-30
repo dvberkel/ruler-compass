@@ -38,4 +38,32 @@ describe("Ruler Compass Enviroment", function(){
             });
         });
     });
+
+    describe("Code", function(){
+        describe("point", function(){
+            beforeEach(function(){
+                $(".parts .free .point").click();
+            });
+            
+            it("should hold 'name'", function(){
+                expect($(".code .point .name")).toExist();
+            });
+            
+            it("should hold 'description'", function(){
+                expect($(".code .point .description")).toExist();
+            });
+
+            describe("Name", function(){
+                it("should be designated with 'P0'", function(){        
+                    expect($(".code .point .name").text()).toBe("P0");
+                });
+            });
+
+            describe("Description", function(){
+                it("should be designated with '(0,0)'", function(){        
+                    expect($(".code .point .description").text()).toBe("(0,0)");
+                });
+            });
+        });
+    });
 });

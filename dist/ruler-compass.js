@@ -1,4 +1,4 @@
-/*! ruler-compass - v0.0.0 - 2012-12-21
+/*! ruler-compass - v0.0.0 - 2012-12-30
  * https://github.com/dvberkel/ruler-compass
  * Copyright (c) 2012 Daan van Berkel; Licensed MIT
  */
@@ -9,6 +9,12 @@ Geometry = {
 
 (function(_, Backbone, Geometry){
     var ConstructionStep = Backbone.Model.extend({
+        name : function(aName){
+            if (aName) {
+                this.set("name", aName);
+            }
+            return aName || this.get("name");
+        }
         
     });
 
@@ -16,6 +22,9 @@ Geometry = {
         model: ConstructionStep,
 
         append: function(step){
+            if (!step.has("name")) {
+                step.name("P" + this.size());
+            }
             this.add(step);
         }
     });
@@ -23,6 +32,7 @@ Geometry = {
     Geometry.ConstructionStep = ConstructionStep;
     Geometry.Construction = Construction;
 })(_, Backbone, Geometry);
+
 (function($, _, Backbone, Geometry){
     var EnvironmentView = Backbone.View.extend({
         initialize : function(){
@@ -106,7 +116,55 @@ Geometry = {
         },
 
         render : function() {
-            $("<div class='point'/>").appendTo(this.$el);
+            var container = this.container();
+            new CodeStepNameView({ el : container, model : this.model });
+            new CodeStepDescriptionView({ el : container, model : this.model });
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $("<div class='point'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepNameView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+            container.empty().text(this.model.name());
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $("<span class='name'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepDescriptionView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+            container.empty().text("(0,0)");
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $("<span class='description'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
         }
     });
 

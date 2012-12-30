@@ -14,7 +14,7 @@ module.exports = function(grunt) {
                 ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %>\n */'
         },
         lint: {
-            files: ['grunt.js', 'src/**/*.js', 'spec/**/*.js']
+            files: ['grunt.js', 'src/**/*.js', 'spec/**/*.js', 'js/**/*.js']
         },
         jasmine: {
             src: [/* defined in the template */],

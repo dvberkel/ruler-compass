@@ -1,5 +1,11 @@
 (function(_, Backbone, Geometry){
     var ConstructionStep = Backbone.Model.extend({
+        name : function(aName){
+            if (aName) {
+                this.set("name", aName);
+            }
+            return aName || this.get("name");
+        }
         
     });
 
@@ -7,6 +13,9 @@
         model: ConstructionStep,
 
         append: function(step){
+            if (!step.has("name")) {
+                step.name("P" + this.size());
+            }
             this.add(step);
         }
     });
