@@ -121,12 +121,32 @@
 
         render : function(){
             var container = this.container();
-            container.empty().text("(0,0)");
+            new CodeStepFreePointView({ model : this.model.point(), el : container });
         },
 
         container : function(){
             if (this._container === undefined) {
                 this._container = $("<span class='description'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepFreePointView = Backbone.View.extend({
+        template : _.template("<span class='free-point'>(<span class='coordinate'><%= x %></span>,<span class='coordinate'><%= y %></span>)</span>"),
+
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $(this.template(this.model.toJSON()));
                 this._container.appendTo(this.$el);
             }
             return this._container;

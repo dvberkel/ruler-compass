@@ -1,4 +1,4 @@
-/*! ruler-compass - v0.0.0 - 2012-12-30
+/*! ruler-compass - v0.0.0 - 2012-12-31
  * https://github.com/dvberkel/ruler-compass
  * Copyright (c) 2012 Daan van Berkel; Licensed MIT
  */
@@ -8,6 +8,10 @@ Geometry = {
 };
 
 (function(_, Backbone, Geometry){
+    var Point = Backbone.Model.extend({
+        defaults : { x : 0, y : 0 }
+    });
+
     var ConstructionStep = Backbone.Model.extend({
         name : function(aName){
             if (aName) {
@@ -15,13 +19,19 @@ Geometry = {
             }
             if (!this.has("name")) {
                 var self = this;
-		this.trigger("request:name", function(aName){
+                this.trigger("request:name", function(aName){
                     self.name(aName);
                 });
             }
             return aName || this.get("name");
-        }
-        
+        },
+
+        point : function() {
+            if (!this.has("point")) {
+                this.set("point", new Point());
+            }
+            return this.get("point");
+        }        
     });
 
     var Construction = Backbone.Collection.extend({
@@ -165,12 +175,32 @@ Geometry = {
 
         render : function(){
             var container = this.container();
-            container.empty().text("(0,0)");
+            new CodeStepFreePointView({ model : this.model.point(), el : container });
         },
 
         container : function(){
             if (this._container === undefined) {
                 this._container = $("<span class='description'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepFreePointView = Backbone.View.extend({
+        template : _.template("<span class='free-point'>(<span class='coordinate'><%= x %></span>,<span class='coordinate'><%= y %></span>)</span>"),
+
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $(this.template(this.model.toJSON()));
                 this._container.appendTo(this.$el);
             }
             return this._container;
