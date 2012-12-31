@@ -1,0 +1,24 @@
+.parts, .code, .result {
+    display: inline-block;
+    border-radius: 5px;
+    padding: 5px;
+    margin-left: 2%;
+    margin-top: 1%;
+    vertical-align: top;
+    height: 95%;
+    background-color: #eeeeee;
+    box-shadow: 3px 3px 5px #cccccc;
+}
+
+.parts {
+    width: 15%;
+}
+
+.code {
+    width: 30%;
+}
+
+.result {
+    width: 45%;
+    margin-right: 2%;
+}
