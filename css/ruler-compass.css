@@ -22,3 +22,34 @@
     width: 45%;
     margin-right: 2%;
 }
+
+.free:before {
+    content: "Free";
+    display: block;
+    font-weight: bolder;
+    margin-bottom: 1ex;
+}
+
+.free > * {
+    margin-left: 1em;
+    font-size: smaller;
+}
+
+.code .point {
+    padding: 3px 3px 0 3px;
+    background-color: #ffffff;
+}
+
+.code .point:first-child {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.code .point:last-child {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.code .point:nth-child(even) {
+    background-color: #cccccc;
+}
