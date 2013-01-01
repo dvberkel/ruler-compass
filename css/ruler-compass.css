@@ -6,8 +6,8 @@
     margin-top: 1%;
     vertical-align: top;
     height: 95%;
-    background-color: #eeeeee;
-    box-shadow: 3px 3px 5px #cccccc;
+    background-color: #dddddd;
+    box-shadow: 3px 3px 5px #aaaaaa;
 }
 
 .parts {
@@ -37,7 +37,7 @@
 
 .code .point {
     padding: 3px 3px 0 3px;
-    background-color: #ffffff;
+    background-color: #eeeeee;
 }
 
 .code .point:first-child {
