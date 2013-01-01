@@ -20,7 +20,7 @@ keyboards. We will use the following alternatives:
 </thead>
 <tbody>
 <tr><td>A-B-C</td><td>point B is between points A and C</td></tr>
-<tr><td></td><td>line through points A and B</td></tr>
+<tr><td>l(A,B)</td><td>line through points A and B</td></tr>
 <tr><td></td><td>ray with vertex A passing through B</td></tr>
 <tr><td></td><td>segment with endpoints A and B</td></tr>
 <tr><td>AB</td><td>distance from A to B</td></tr>
