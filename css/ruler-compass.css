@@ -35,6 +35,17 @@
     font-size: smaller;
 }
 
+.code:before {
+    content: "Code";
+    display: block;
+    font-weight: bolder;
+    margin-bottom: 1ex;
+}
+
+.code > * {
+    font-size: smaller;
+}
+
 .code .point {
     padding: 3px 3px 0 3px;
     background-color: #eeeeee;
@@ -52,4 +63,9 @@
 
 .code .point:nth-child(even) {
     background-color: #cccccc;
+}
+
+.name {
+    display: inline-block;
+    width: 6em;
 }
