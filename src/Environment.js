@@ -82,13 +82,32 @@
 
         render : function() {
             var container = this.container();
-            new CodeStepNameView({ el : container, model : this.model });
+            new CodeStepNamesView({ el : container, model : this.model });
             new CodeStepDescriptionView({ el : container, model : this.model });
         },
 
         container : function(){
             if (this._container === undefined) {
                 this._container = $("<div class='point'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepNamesView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+            new CodeStepNameView({ el : container, model : this.model });
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $("<span class='names'/>");
                 this._container.appendTo(this.$el);
             }
             return this._container;

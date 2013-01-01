@@ -45,18 +45,24 @@ describe("Ruler Compass Enviroment", function(){
                 $(".parts .free .point").click();
             });
             
-            it("should hold 'name'", function(){
-                expect($(".code .point .name")).toExist();
+            it("should hold 'names'", function(){
+                expect($(".code .point .names")).toExist();
             });
             
             it("should hold 'description'", function(){
                 expect($(".code .point .description")).toExist();
             });
 
-            describe("Name", function(){
-                it("should be designated with 'P0'", function(){        
-                    expect($(".code .point .name").text()).toBe("P0");
+            describe("Names", function(){
+                it("should contain a single name", function(){        
+                    expect($(".code .point .names .name")).toExist();
                 });
+
+		describe("name", function(){
+                    it("should be designated with 'P0'", function(){        
+			expect($(".code .point .names .name").text()).toBe("P0");
+                    });
+		});
             });
 
             describe("Description", function(){

@@ -1,6 +1,6 @@
-/*! ruler-compass - v0.0.0 - 2012-12-31
+/*! ruler-compass - v0.0.0 - 2013-01-01
  * https://github.com/dvberkel/ruler-compass
- * Copyright (c) 2012 Daan van Berkel; Licensed MIT
+ * Copyright (c) 2013 Daan van Berkel; Licensed MIT
  */
 
 Geometry = {
@@ -136,13 +136,32 @@ Geometry = {
 
         render : function() {
             var container = this.container();
-            new CodeStepNameView({ el : container, model : this.model });
+            new CodeStepNamesView({ el : container, model : this.model });
             new CodeStepDescriptionView({ el : container, model : this.model });
         },
 
         container : function(){
             if (this._container === undefined) {
                 this._container = $("<div class='point'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepNamesView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+            new CodeStepNameView({ el : container, model : this.model });
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $("<span class='names'/>");
                 this._container.appendTo(this.$el);
             }
             return this._container;
