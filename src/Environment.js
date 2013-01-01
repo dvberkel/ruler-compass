@@ -23,6 +23,7 @@
             var parts = $("<div class='parts'/>");
             parts.appendTo(this.$el);
             new FreePartsView({ el : parts, model : this.model });
+            new ConstructionsPartsView({ el : parts, model : this.model });
         }
     });
 
@@ -48,7 +49,35 @@
             container.appendTo(this.$el);
             var model = this.model;
             container.click(function(){
-                model.append(new Geometry.ConstructionStep({}));
+                model.append(new Geometry.ConstructionStep({ object : new Geometry.Point() }));
+            });
+        }
+    });
+
+    var ConstructionsPartsView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = $("<div class='constructions'/>");
+            container.appendTo(this.$el);
+            new LineConstructionPartView({ el : container, model : this.model });
+        }
+    });
+
+    var LineConstructionPartView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+        
+        render : function(){
+            var container = $("<span class='line'>Line</span>");
+            container.appendTo(this.$el);
+            var model = this.model;
+            container.click(function(){
+		var points = model.firstPoints(2);
+                model.append(new Geometry.ConstructionStep({ object : new Geometry.Line( points ) }));
             });
         }
     });
@@ -76,6 +105,8 @@
     });
 
     var CodeStepView = Backbone.View.extend({
+        template : _.template("<div class='<%= type %>'/>"),
+
         initialize : function(){
             this.render();
         },
@@ -88,7 +119,7 @@
 
         container : function(){
             if (this._container === undefined) {
-                this._container = $("<div class='point'/>");
+                this._container = $(this.template(this.model.object().toJSON()));
                 this._container.appendTo(this.$el);
             }
             return this._container;
@@ -135,12 +166,19 @@
 
     var CodeStepDescriptionView = Backbone.View.extend({
         initialize : function(){
+            this.descriptions = {
+                "point" : CodeStepFreePointView,
+                "line" : CodeStepLineView
+            };
             this.render();
         },
 
         render : function(){
             var container = this.container();
-            new CodeStepFreePointView({ model : this.model.point(), el : container });
+            new (this.descriptions[this.model.object().get("type")])({ 
+                model : this.model.object(),
+                el : container
+            });
         },
 
         container : function(){
@@ -154,6 +192,26 @@
 
     var CodeStepFreePointView = Backbone.View.extend({
         template : _.template("<span class='free-point'>(<span class='coordinate'><%= x %></span>,<span class='coordinate'><%= y %></span>)</span>"),
+
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $(this.template(this.model.toJSON()));
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepLineView = Backbone.View.extend({
+        template : _.template("<span class='line'>l(<span class='reference-point'><%= P0 %></span>,<span class='reference-point'><%= P1 %></span>)</span>"),
 
         initialize : function(){
             this.render();

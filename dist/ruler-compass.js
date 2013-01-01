@@ -8,8 +8,20 @@ Geometry = {
 };
 
 (function(_, Backbone, Geometry){
+    var NameGenerator = function(prefix){
+        var count = 0;
+
+        this.nextName = function(){
+            return prefix + count++;
+        };
+    };
+
     var Point = Backbone.Model.extend({
-        defaults : { x : 0, y : 0 }
+        defaults : { type : "point", x : 0, y : 0 }
+    });
+
+    var Line = Backbone.Model.extend({
+        defaults : { type : "line", "P0" : "A", "P1" : "B" }
     });
 
     var ConstructionStep = Backbone.Model.extend({
@@ -19,7 +31,7 @@ Geometry = {
             }
             if (!this.has("name")) {
                 var self = this;
-                this.trigger("request:name", function(aName){
+                this.trigger("request:name", self.object().get("type"), function(aName){
                     self.name(aName);
                 });
             }
@@ -31,23 +43,43 @@ Geometry = {
                 this.set("point", new Point());
             }
             return this.get("point");
-        }        
+        },
+
+        object : function() {
+            return this.get("object");
+        }
     });
 
     var Construction = Backbone.Collection.extend({
         model: ConstructionStep,
+
+        initialize : function(){
+            this.generators = {
+                "point" : new NameGenerator("P"),
+                "line" : new NameGenerator("l")
+            };
+        },
 
         append: function(step){
             step.on("request:name", this.provideName, this);
             this.add(step);
         },
 
-        provideName : function(callback){
-            callback.call(null, "P" + (this.size() - 1));
+        provideName : function(type, callback){
+            callback.call(null, this.generators[type].nextName());
+        },
+
+        firstPoints : function(n) {
+            var result = {}, count = 0;
+            this.filter(function(step){ return step.object().get("type") === "point"; })
+		.reduce(function(memo, step){ memo["P" + count++] = step.name(); return memo; }, result);
+            return result;
         }
 
     });
 
+    Geometry.Point = Point;
+    Geometry.Line = Line;
     Geometry.ConstructionStep = ConstructionStep;
     Geometry.Construction = Construction;
 })(_, Backbone, Geometry);
@@ -77,6 +109,7 @@ Geometry = {
             var parts = $("<div class='parts'/>");
             parts.appendTo(this.$el);
             new FreePartsView({ el : parts, model : this.model });
+            new ConstructionsPartsView({ el : parts, model : this.model });
         }
     });
 
@@ -102,7 +135,35 @@ Geometry = {
             container.appendTo(this.$el);
             var model = this.model;
             container.click(function(){
-                model.append(new Geometry.ConstructionStep({}));
+                model.append(new Geometry.ConstructionStep({ object : new Geometry.Point() }));
+            });
+        }
+    });
+
+    var ConstructionsPartsView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = $("<div class='constructions'/>");
+            container.appendTo(this.$el);
+            new LineConstructionPartView({ el : container, model : this.model });
+        }
+    });
+
+    var LineConstructionPartView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+        
+        render : function(){
+            var container = $("<span class='line'>Line</span>");
+            container.appendTo(this.$el);
+            var model = this.model;
+            container.click(function(){
+		var points = model.firstPoints(2);
+                model.append(new Geometry.ConstructionStep({ object : new Geometry.Line( points ) }));
             });
         }
     });
@@ -130,6 +191,8 @@ Geometry = {
     });
 
     var CodeStepView = Backbone.View.extend({
+        template : _.template("<div class='<%= type %>'/>"),
+
         initialize : function(){
             this.render();
         },
@@ -142,7 +205,7 @@ Geometry = {
 
         container : function(){
             if (this._container === undefined) {
-                this._container = $("<div class='point'/>");
+                this._container = $(this.template(this.model.object().toJSON()));
                 this._container.appendTo(this.$el);
             }
             return this._container;
@@ -189,12 +252,19 @@ Geometry = {
 
     var CodeStepDescriptionView = Backbone.View.extend({
         initialize : function(){
+            this.descriptions = {
+                "point" : CodeStepFreePointView,
+                "line" : CodeStepLineView
+            };
             this.render();
         },
 
         render : function(){
             var container = this.container();
-            new CodeStepFreePointView({ model : this.model.point(), el : container });
+            new (this.descriptions[this.model.object().get("type")])({ 
+                model : this.model.object(),
+                el : container
+            });
         },
 
         container : function(){
@@ -208,6 +278,26 @@ Geometry = {
 
     var CodeStepFreePointView = Backbone.View.extend({
         template : _.template("<span class='free-point'>(<span class='coordinate'><%= x %></span>,<span class='coordinate'><%= y %></span>)</span>"),
+
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $(this.template(this.model.toJSON()));
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepLineView = Backbone.View.extend({
+        template : _.template("<span class='line'>l(<span class='reference-point'><%= P0 %></span>,<span class='reference-point'><%= P1 %></span>)</span>"),
 
         initialize : function(){
             this.render();

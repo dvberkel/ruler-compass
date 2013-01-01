@@ -23,6 +23,10 @@
     margin-right: 2%;
 }
 
+.parts > * {
+    margin-bottom: 2ex;
+}
+
 .free:before {
     content: "Free";
     display: block;
@@ -31,6 +35,18 @@
 }
 
 .free > * {
+    margin-left: 1em;
+    font-size: smaller;
+}
+
+.constructions:before {
+    content: "Constructions";
+    display: block;
+    font-weight: bolder;
+    margin-bottom: 1ex;
+}
+
+.constructions > * {
     margin-left: 1em;
     font-size: smaller;
 }
@@ -46,22 +62,22 @@
     font-size: smaller;
 }
 
-.code .point {
+.code > * {
     padding: 3px 3px 0 3px;
     background-color: #eeeeee;
 }
 
-.code .point:first-child {
+.code > *:first-child {
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 }
 
-.code .point:last-child {
+.code > *:last-child {
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
 }
 
-.code .point:nth-child(even) {
+.code > *:nth-child(even) {
     background-color: #cccccc;
 }
 
