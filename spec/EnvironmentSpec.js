@@ -100,5 +100,40 @@ describe("Ruler Compass Enviroment", function(){
                 });
             });
         });
+
+        describe("line", function(){
+            beforeEach(function(){
+                _.each(_.range(2), function(){
+                    $(".parts .free .point").click();
+                });
+                $(".parts .constructions .line").click();
+            });
+            
+            it("should hold 'names'", function(){
+                expect($(".code .line .names")).toExist();
+            });
+            
+            it("should hold 'description'", function(){
+                expect($(".code .line .description")).toExist();
+            });
+
+            describe("Names", function(){
+                it("should contain a single name", function(){        
+                    expect($(".code .line .names .name")).toExist();
+                });
+
+                describe("name", function(){
+                    it("should be designated with 'l0'", function(){        
+                        expect($(".code .line .names .name").text()).toBe("l0");
+                    });
+                });
+            });
+
+            describe("Description", function(){
+                it("should be designated with 'l(P0,P1)'", function(){        
+                    expect($(".code .line .description").text()).toBe("l(P0,P1)");
+                });
+            });
+        });
     });
 });
