@@ -337,21 +337,69 @@ Geometry = {
 
     var PlaneView = Backbone.View.extend({
         initialize : function(){
+            this.model.on("add", function(step){
+                var paper = this.paper();
+                new ResultStepView({ model : step, paper : paper });
+            }, this);
+
             this.render();
         },
 
         render : function(){
             var paper = this.paper();
-            $(paper.node).width(this.$el.width());
+            new CoordinateSystem({ model : this.model, paper : paper });
         },
 
         paper : function(){
             if (this._paper === undefined) {
                 this._paper = new Raphael(this.$el.attr("id"), 640, 480);
+                this._paper.setViewBox(-640/2, -480/2, 640, 480);
             }
             return this._paper;
         }
     });
 
+    var CoordinateSystem = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var paper = this.paper();
+
+            paper.path("M-320,0L640,0").attr({ stroke: "black" });
+            paper.path("M0,-240L0,480").attr({ stroke: "black" });
+        },
+
+        paper : function(){
+            return this.options.paper;
+        }
+    });
+
+    var ResultStepView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var point = this.point();
+            var object = this.model.object();
+            point.attr({cx : object.get("x"), cy: object.get("y")});
+        },
+
+        point : function(){
+            if (this._point === undefined) {
+                var paper = this.paper();
+                this._point = paper.circle(0, 0, 3);
+            }
+            return this._point;
+        },
+
+        paper : function(){
+            return this.options.paper;
+        }
+    });
+
     Geometry.EnvironmentView = EnvironmentView;
 })(jQuery, _, Backbone, Raphael, Geometry);
+ 
