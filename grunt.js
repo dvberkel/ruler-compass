@@ -67,7 +67,8 @@ module.exports = function(grunt) {
 		loadFixtures: false,
 		_: false,
 		Backbone: false,
-		Geometry: true
+		Geometry: true,
+		Raphael: false
             }
         },
         uglify: {}

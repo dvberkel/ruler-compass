@@ -85,3 +85,7 @@
     display: inline-block;
     width: 6em;
 }
+
+.result svg {
+    background: #ffffff;
+}

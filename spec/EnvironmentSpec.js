@@ -136,4 +136,16 @@ describe("Ruler Compass Enviroment", function(){
             });
         });
     });
+
+    describe("Result", function(){
+        it("should create an svg element", function(){
+            expect($(".result svg")).toExist();
+        });
+        
+        describe("point", function(){
+            beforeEach(function(){
+                $(".parts .free .point").click();
+            });
+        });
+    });
 });

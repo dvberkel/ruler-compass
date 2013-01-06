@@ -1,4 +1,4 @@
-(function($, _, Backbone, Geometry){
+(function($, _, Backbone, Raphael, Geometry){
     var EnvironmentView = Backbone.View.extend({
         initialize : function(){
             if (! this.model) {
@@ -10,7 +10,7 @@
         render : function(){
             new PartsView({ el : this.$el, model : this.model });
             new CodeView({ el : this.$el, model : this.model });
-            $("<div class='result'/>").appendTo(this.$el);
+            new ResultView({ el : this.$el, model : this.model });
         }
     });
 
@@ -76,7 +76,7 @@
             container.appendTo(this.$el);
             var model = this.model;
             container.click(function(){
-		var points = model.firstPoints(2);
+                var points = model.firstPoints(2);
                 model.append(new Geometry.ConstructionStep({ object : new Geometry.Line( points ) }));
             });
         }
@@ -230,5 +230,41 @@
         }
     });
 
+    var ResultView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+            new PlaneView({ model : this.model, el : container });
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $("<div class='result' id='result'/>");
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var PlaneView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var paper = this.paper();
+        },
+
+        paper : function(){
+            if (this._paper === undefined) {
+                this._paper = new Raphael(this.$el.attr("id"), 640, 480);
+            }
+            return this._paper;
+        }
+    });
+
     Geometry.EnvironmentView = EnvironmentView;
-})(jQuery, _, Backbone, Geometry);
+})(jQuery, _, Backbone, Raphael, Geometry);
