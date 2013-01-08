@@ -39,6 +39,12 @@ describe("Ruler Compass Enviroment", function(){
 
                     expect($(".code > .point").size()).toBe(1);
                 });
+
+                it("should create a result point", function(){
+                    $(".parts .free .point").click();
+
+                    expect($(".result .point").size()).toBe(1);
+                });
             });
         });
 

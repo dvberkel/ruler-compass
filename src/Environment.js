@@ -305,6 +305,7 @@
             if (this._point === undefined) {
                 var paper = this.paper();
                 this._point = paper.circle(0, 0, 3);
+		this._point.node.setAttribute("class", "point");
             }
             return this._point;
         },

@@ -1,4 +1,4 @@
-/*! ruler-compass - v0.0.0 - 2013-01-06
+/*! ruler-compass - v0.0.0 - 2013-01-08
  * https://github.com/dvberkel/ruler-compass
  * Copyright (c) 2013 Daan van Berkel; Licensed MIT
  */
@@ -391,6 +391,7 @@ Geometry = {
             if (this._point === undefined) {
                 var paper = this.paper();
                 this._point = paper.circle(0, 0, 3);
+		this._point.node.setAttribute("class", "point");
             }
             return this._point;
         },
