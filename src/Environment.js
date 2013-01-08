@@ -191,14 +191,17 @@
     });
 
     var CodeStepFreePointView = Backbone.View.extend({
-        template : _.template("<span class='free-point'>(<span class='coordinate'><%= x %></span>,<span class='coordinate'><%= y %></span>)</span>"),
+        template : _.template("<span class='free-point'>(<span class='coordinate x'><%= x %></span>,<span class='coordinate y'><%= y %></span>)</span>"),
 
         initialize : function(){
             this.render();
+            this.model.on("change:x, change:y", this.render, this);
         },
 
         render : function(){
             var container = this.container();
+            container.find(".x").text(this.model.get("x"));
+            container.find(".y").text(this.model.get("y"));
         },
 
         container : function(){
@@ -304,8 +307,21 @@
         point : function(){
             if (this._point === undefined) {
                 var paper = this.paper();
-                this._point = paper.circle(0, 0, 3);
-		this._point.node.setAttribute("class", "point");
+                this._point = paper.circle(0, 0, 3).attr({
+                    stroke: "black",
+                    fill: "black"
+                });
+                this._point.node.setAttribute("class", "point");
+                this._point.drag(function(dx, dy){
+                    var cx = this.ox + dx;
+                    var cy = this.oy + dy;
+                    this.model.object().set({ "x": cx, "y": cy });
+                    this.point().attr({ "cx": cx, "cy": cy });
+                }, function(x, y){
+                    var point = this.point();
+                    this.ox = point.attr("cx");
+                    this.oy = point.attr("cy");
+                }, function(){}, this, this, this);
             }
             return this._point;
         },
