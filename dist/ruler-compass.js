@@ -1,4 +1,4 @@
-/*! ruler-compass - v0.0.0 - 2013-01-09
+/*! ruler-compass - v0.0.0 - 2013-01-10
  * https://github.com/dvberkel/ruler-compass
  * Copyright (c) 2013 Daan van Berkel; Licensed MIT
  */
@@ -74,11 +74,15 @@ Geometry = {
             callback.call(null, this.generators[type].nextName());
         },
 
-        firstPoints : function(n) {
+        firstPoints : function(n){
             var result = {}, count = 0;
             this.filter(function(step){ return step.object().get("type") === "point"; })
                 .reduce(function(memo, step){ memo["P" + count++] = step.name(); return memo; }, result);
             return result;
+        },
+
+        lookUp : function(name){
+            return this.find(function(step){ return step.name() === name; });
         }
 
     });
@@ -345,9 +349,10 @@ Geometry = {
 
     var PlaneView = Backbone.View.extend({
         initialize : function(){
-            this.model.on("add", function(step){
+            var model = this.model;
+            model.on("add", function(step){
                 var paper = this.paper();
-                new ResultStepView({ model : step, paper : paper });
+                new ResultStepView({ model : step, paper : paper, parent : model });
             }, this);
 
             this.render();
@@ -386,13 +391,38 @@ Geometry = {
 
     var ResultStepView = Backbone.View.extend({
         initialize : function(){
+            this.types = {
+                "point" : ResultStepFreePointView,
+                "line" : ResultStepLineView
+            };
+            this.render();
+        },
+
+        render : function(){
+            new (this.types[this.model.object().get("type")])({ 
+                model : this.model.object(),
+                paper : this.paper(),
+                parent : this.parent()
+            });
+        },
+
+        paper : function(){
+            return this.options.paper;
+        },
+
+        parent : function(){
+            return this.options.parent;
+        }
+    });
+
+    var ResultStepFreePointView = Backbone.View.extend({
+        initialize : function(){
             this.render();
         },
 
         render : function(){
             var point = this.point();
-            var object = this.model.object();
-            point.attr({cx : object.get("x"), cy: object.get("y")});
+            point.attr({cx : this.model.get("x"), cy: this.model.get("y")});
         },
 
         point : function(){
@@ -406,7 +436,7 @@ Geometry = {
                 this._point.drag(function(dx, dy){
                     var cx = this.ox + dx;
                     var cy = this.oy + dy;
-                    this.model.object().updateFromResult({ "x": cx, "y": cy });
+                    this.model.updateFromResult({ "x": cx, "y": cy });
                     this.point().attr({ "cx": cx, "cy": cy });
                 }, function(x, y){
                     var point = this.point();
@@ -422,6 +452,58 @@ Geometry = {
         }
     });
 
+    var ResultStepLineView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var line = this.line();
+            line.update();
+        },
+
+        line : function(){
+            if (this._line === undefined) {
+                var paper = this.paper();
+                var pointA = this.parent().lookUp(this.model.get("P0")).object();
+                var pointB = this.parent().lookUp(this.model.get("P1")).object();
+                this._line = new Line({
+                    A : pointA,
+                    B : pointB,
+                    paper : paper 
+                });
+		pointA.on("change:x, change:y", this.render, this);
+		pointB.on("change:x, change:y", this.render, this);
+            }
+            return this._line;
+        },
+
+        paper : function(){
+            return this.options.paper;
+        },
+
+        parent : function(){
+            return this.options.parent;
+        }
+    });
+
+    var Line = function(options){
+        var pointA = options.A;
+        var pointB = options.B;
+        var object = options.paper.path("M0,0L0,0").attr({ stroke : "black" });
+
+        this.attr = function(attributes){
+            object.attr(attributes);
+        };
+
+        this.update = function(){
+            var path = [
+                ["M", pointA.get("x"), pointA.get("y")],
+                ["L", pointB.get("x"), pointB.get("y")]
+            ];
+            this.attr({ "path" : path });
+        };
+    };
+
     Geometry.EnvironmentView = EnvironmentView;
 })(jQuery, _, Backbone, Raphael, Geometry);
- 

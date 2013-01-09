@@ -65,11 +65,15 @@
             callback.call(null, this.generators[type].nextName());
         },
 
-        firstPoints : function(n) {
+        firstPoints : function(n){
             var result = {}, count = 0;
             this.filter(function(step){ return step.object().get("type") === "point"; })
                 .reduce(function(memo, step){ memo["P" + count++] = step.name(); return memo; }, result);
             return result;
+        },
+
+        lookUp : function(name){
+            return this.find(function(step){ return step.name() === name; });
         }
 
     });
