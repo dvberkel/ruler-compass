@@ -1,4 +1,4 @@
-/*! ruler-compass - v0.0.0 - 2013-01-08
+/*! ruler-compass - v0.0.0 - 2013-01-09
  * https://github.com/dvberkel/ruler-compass
  * Copyright (c) 2013 Daan van Berkel; Licensed MIT
  */
@@ -17,7 +17,12 @@ Geometry = {
     };
 
     var Point = Backbone.Model.extend({
-        defaults : { type : "point", x : 0, y : 0 }
+        defaults : { type : "point", x : 0, y : 0 },
+
+        updateFromResult : function(attributes) {
+            this.set(attributes);
+            this.trigger("updatedFromResult");
+        }
     });
 
     var Line = Backbone.Model.extend({
@@ -72,7 +77,7 @@ Geometry = {
         firstPoints : function(n) {
             var result = {}, count = 0;
             this.filter(function(step){ return step.object().get("type") === "point"; })
-		.reduce(function(memo, step){ memo["P" + count++] = step.name(); return memo; }, result);
+                .reduce(function(memo, step){ memo["P" + count++] = step.name(); return memo; }, result);
             return result;
         }
 
@@ -281,7 +286,7 @@ Geometry = {
 
         initialize : function(){
             this.render();
-            this.model.on("change:x, change:y", this.render, this);
+            this.model.on("updatedFromResult", this.render, this);
         },
 
         render : function(){
@@ -401,7 +406,7 @@ Geometry = {
                 this._point.drag(function(dx, dy){
                     var cx = this.ox + dx;
                     var cy = this.oy + dy;
-                    this.model.object().set({ "x": cx, "y": cy });
+                    this.model.object().updateFromResult({ "x": cx, "y": cy });
                     this.point().attr({ "cx": cx, "cy": cy });
                 }, function(x, y){
                     var point = this.point();

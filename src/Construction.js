@@ -8,7 +8,12 @@
     };
 
     var Point = Backbone.Model.extend({
-        defaults : { type : "point", x : 0, y : 0 }
+        defaults : { type : "point", x : 0, y : 0 },
+
+        updateFromResult : function(attributes) {
+            this.set(attributes);
+            this.trigger("updatedFromResult");
+        }
     });
 
     var Line = Backbone.Model.extend({
@@ -63,7 +68,7 @@
         firstPoints : function(n) {
             var result = {}, count = 0;
             this.filter(function(step){ return step.object().get("type") === "point"; })
-		.reduce(function(memo, step){ memo["P" + count++] = step.name(); return memo; }, result);
+                .reduce(function(memo, step){ memo["P" + count++] = step.name(); return memo; }, result);
             return result;
         }
 

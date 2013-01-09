@@ -195,7 +195,7 @@
 
         initialize : function(){
             this.render();
-            this.model.on("change:x, change:y", this.render, this);
+            this.model.on("updatedFromResult", this.render, this);
         },
 
         render : function(){
@@ -315,7 +315,7 @@
                 this._point.drag(function(dx, dy){
                     var cx = this.ox + dx;
                     var cy = this.oy + dy;
-                    this.model.object().set({ "x": cx, "y": cy });
+                    this.model.object().updateFromResult({ "x": cx, "y": cy });
                     this.point().attr({ "cx": cx, "cy": cy });
                 }, function(x, y){
                     var point = this.point();
