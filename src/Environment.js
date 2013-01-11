@@ -323,8 +323,8 @@
         render : function(){
             var paper = this.paper();
 
-            paper.path("M-320,0L640,0").attr({ stroke: "black" });
-            paper.path("M0,-240L0,480").attr({ stroke: "black" });
+            paper.path("M-320,0L640,0").attr({ stroke: "#cccccc" });
+            paper.path("M0,-240L0,480").attr({ stroke: "#cccccc" });
         },
 
         paper : function(){
