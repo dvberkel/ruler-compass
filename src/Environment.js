@@ -77,8 +77,8 @@
             container.appendTo(this.$el);
             var model = this.model;
             container.click(function(){
-                var points = model.firstPoints(2);
-                model.append(new Geometry.ConstructionStep({ object : new Geometry.Line( points ) }));
+                var pointsNames = model.lastPointsName(2);
+                model.append(new Geometry.ConstructionStep({ object : new Geometry.Line( pointsNames ) }));
             });
         }
     });
@@ -93,8 +93,8 @@
             container.appendTo(this.$el);
             var model = this.model;
             container.click(function(){
-                var points = model.firstPoints(2);
-                model.append(new Geometry.ConstructionStep({ object : new Geometry.Circle( points ) }));
+                var pointsNames = model.lastPointsName(2);
+                model.append(new Geometry.ConstructionStep({ object : new Geometry.Circle( pointsNames ) }));
             });
         }
     });

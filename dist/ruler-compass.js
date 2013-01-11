@@ -79,10 +79,13 @@ Geometry = {
             callback.call(null, this.generators[type].nextName());
         },
 
-        firstPoints : function(n){
-            var result = {}, count = 0;
-            this.filter(function(step){ return step.object().get("type") === "point"; })
-                .reduce(function(memo, step){ memo["P" + count++] = step.name(); return memo; }, result);
+        lastPointsName : function(n){
+            var result = {};
+            var lastSteps = this.filter(function(step){ return step.object().get("type") === "point"; })
+                .slice(-n);
+            _.each(lastSteps, function(step, index){
+                result["P" + index] = step.name();
+            });
             return result;
         },
 
@@ -178,8 +181,8 @@ Geometry = {
             container.appendTo(this.$el);
             var model = this.model;
             container.click(function(){
-                var points = model.firstPoints(2);
-                model.append(new Geometry.ConstructionStep({ object : new Geometry.Line( points ) }));
+                var pointsNames = model.lastPointsName(2);
+                model.append(new Geometry.ConstructionStep({ object : new Geometry.Line( pointsNames ) }));
             });
         }
     });
@@ -194,8 +197,8 @@ Geometry = {
             container.appendTo(this.$el);
             var model = this.model;
             container.click(function(){
-                var points = model.firstPoints(2);
-                model.append(new Geometry.ConstructionStep({ object : new Geometry.Circle( points ) }));
+                var pointsNames = model.lastPointsName(2);
+                model.append(new Geometry.ConstructionStep({ object : new Geometry.Circle( pointsNames ) }));
             });
         }
     });
