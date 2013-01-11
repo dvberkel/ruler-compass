@@ -536,6 +536,7 @@ Geometry = {
         var pointA = options.A;
         var pointB = options.B;
         var object = options.paper.path("M0,0L0,0").attr({ stroke : "black" });
+	object.node.setAttribute("class", "line");
 
         this.attr = function(attributes){
             object.attr(attributes);
@@ -589,6 +590,7 @@ Geometry = {
         var pointA = options.A;
         var pointB = options.B;
         var object = options.paper.circle(0, 0, 10).attr({ stroke : "black" });
+	object.node.setAttribute("class", "circle");
 
         this.attr = function(attributes){
             object.attr(attributes);

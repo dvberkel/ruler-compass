@@ -211,7 +211,33 @@ describe("Ruler Compass Enviroment", function(){
             });
 
             it("should create a circle", function(){
-                expect($(".result svg circle")).toExist();
+                expect($(".result svg circle.point")).toExist();
+            });
+        });
+        
+        describe("line", function(){
+            beforeEach(function(){
+                _.each(_.range(2), function(){
+                    $(".parts .free .point").click();
+                });
+                $(".parts .constructions .line").click();
+            });
+
+            it("should create a path", function(){
+                expect($(".result svg path.line")).toExist();
+            });
+        });
+        
+        describe("circle", function(){
+            beforeEach(function(){
+                _.each(_.range(2), function(){
+                    $(".parts .free .point").click();
+                });
+                $(".parts .constructions .circle").click();
+            });
+
+            it("should create a circle", function(){
+                expect($(".result svg circle.circle")).toExist();
             });
         });
     });
