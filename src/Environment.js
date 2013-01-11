@@ -63,6 +63,7 @@
             var container = $("<div class='constructions'/>");
             container.appendTo(this.$el);
             new LineConstructionPartView({ el : container, model : this.model });
+            new CircleConstructionPartView({ el : container, model : this.model });
         }
     });
 
@@ -78,6 +79,22 @@
             container.click(function(){
                 var points = model.firstPoints(2);
                 model.append(new Geometry.ConstructionStep({ object : new Geometry.Line( points ) }));
+            });
+        }
+    });
+
+    var CircleConstructionPartView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+        
+        render : function(){
+            var container = $("<span class='circle'>Circle</span>");
+            container.appendTo(this.$el);
+            var model = this.model;
+            container.click(function(){
+                var points = model.firstPoints(2);
+                model.append(new Geometry.ConstructionStep({ object : new Geometry.Circle( points ) }));
             });
         }
     });
@@ -168,7 +185,8 @@
         initialize : function(){
             this.descriptions = {
                 "point" : CodeStepFreePointView,
-                "line" : CodeStepLineView
+                "line" : CodeStepLineView,
+                "circle" : CodeStepCircleView
             };
             this.render();
         },
@@ -215,6 +233,26 @@
 
     var CodeStepLineView = Backbone.View.extend({
         template : _.template("<span class='line'>l(<span class='reference-point'><%= P0 %></span>,<span class='reference-point'><%= P1 %></span>)</span>"),
+
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var container = this.container();
+        },
+
+        container : function(){
+            if (this._container === undefined) {
+                this._container = $(this.template(this.model.toJSON()));
+                this._container.appendTo(this.$el);
+            }
+            return this._container;
+        }
+    });
+
+    var CodeStepCircleView = Backbone.View.extend({
+        template : _.template("<span class='circle'><span class='reference-point'><%= P0 %></span><sub><span class='reference-point'><%= P1 %></span></sub></span>"),
 
         initialize : function(){
             this.render();
@@ -298,7 +336,8 @@
         initialize : function(){
             this.types = {
                 "point" : ResultStepFreePointView,
-                "line" : ResultStepLineView
+                "line" : ResultStepLineView,
+                "circle" : ResultStepCircleView
             };
             this.render();
         },
@@ -377,8 +416,8 @@
                     B : pointB,
                     paper : paper 
                 });
-		pointA.on("change:x, change:y", this.render, this);
-		pointB.on("change:x, change:y", this.render, this);
+                pointA.on("change:x, change:y", this.render, this);
+                pointB.on("change:x, change:y", this.render, this);
             }
             return this._line;
         },
@@ -407,6 +446,58 @@
                 ["L", pointB.get("x"), pointB.get("y")]
             ];
             this.attr({ "path" : path });
+        };
+    };
+
+    var ResultStepCircleView = Backbone.View.extend({
+        initialize : function(){
+            this.render();
+        },
+
+        render : function(){
+            var circle = this.circle();
+            circle.update();
+        },
+
+        circle : function(){
+            if (this._circle === undefined) {
+                var paper = this.paper();
+                var pointA = this.parent().lookUp(this.model.get("P0")).object();
+                var pointB = this.parent().lookUp(this.model.get("P1")).object();
+                this._circle = new Circle({
+                    A : pointA,
+                    B : pointB,
+                    paper : paper 
+                });
+                pointA.on("change:x, change:y", this.render, this);
+                pointB.on("change:x, change:y", this.render, this);
+            }
+            return this._circle;
+        },
+
+        paper : function(){
+            return this.options.paper;
+        },
+
+        parent : function(){
+            return this.options.parent;
+        }
+    });
+
+    var Circle = function(options){
+        var pointA = options.A;
+        var pointB = options.B;
+        var object = options.paper.circle(0, 0, 10).attr({ stroke : "black" });
+
+        this.attr = function(attributes){
+            object.attr(attributes);
+        };
+
+        this.update = function(){
+            var cx = pointA.get("x");
+            var cy = pointA.get("y");
+            var r = Math.sqrt(Math.pow(pointB.get("x") - cx,2) + Math.pow(pointB.get("y") - cy,2));
+            this.attr({ "cx" : cx, "cy": cy, "r" : r });
         };
     };
 

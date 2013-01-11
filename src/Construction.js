@@ -20,6 +20,10 @@
         defaults : { type : "line", "P0" : "A", "P1" : "B" }
     });
 
+    var Circle = Backbone.Model.extend({
+        defaults : { type : "circle", "P0" : "A", "P1" : "B" }
+    });
+
     var ConstructionStep = Backbone.Model.extend({
         name : function(aName){
             if (aName) {
@@ -52,7 +56,8 @@
         initialize : function(){
             this.generators = {
                 "point" : new NameGenerator("P"),
-                "line" : new NameGenerator("l")
+                "line" : new NameGenerator("l"),
+                "circle" : new NameGenerator("c")
             };
         },
 
@@ -80,6 +85,7 @@
 
     Geometry.Point = Point;
     Geometry.Line = Line;
+    Geometry.Circle = Circle;
     Geometry.ConstructionStep = ConstructionStep;
     Geometry.Construction = Construction;
 })(_, Backbone, Geometry);

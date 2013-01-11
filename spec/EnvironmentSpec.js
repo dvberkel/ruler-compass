@@ -53,6 +53,10 @@ describe("Ruler Compass Enviroment", function(){
                 expect($(".parts .constructions .line")).toExist();
             });
 
+            it("should hold 'circle'", function(){
+                expect($(".parts .constructions .circle")).toExist();
+            });
+
             describe("line", function(){
                 beforeEach(function(){
                     _.each(_.range(2), function(){
@@ -68,6 +72,24 @@ describe("Ruler Compass Enviroment", function(){
                     $(".parts .constructions .line").click();
 
                     expect($(".code > .line").size()).toBe(1);
+                });
+            });
+
+            describe("circle", function(){
+                beforeEach(function(){
+                    _.each(_.range(2), function(){
+                        $(".parts .free .point").click();
+                    });
+                });
+                
+                it("should be designated with 'Circle'", function(){
+                    expect($(".parts .constructions .circle").text()).toBe("Circle");
+                });
+
+                it("should create a code circle", function(){
+                    $(".parts .constructions .circle").click();
+
+                    expect($(".code > .circle").size()).toBe(1);
                 });
             });
         });
@@ -138,6 +160,41 @@ describe("Ruler Compass Enviroment", function(){
             describe("Description", function(){
                 it("should be designated with 'l(P0,P1)'", function(){        
                     expect($(".code .line .description").text()).toBe("l(P0,P1)");
+                });
+            });
+        });
+
+        describe("circle", function(){
+            beforeEach(function(){
+                _.each(_.range(2), function(){
+                    $(".parts .free .point").click();
+                });
+                $(".parts .constructions .circle").click();
+            });
+            
+            it("should hold 'names'", function(){
+                expect($(".code .circle .names")).toExist();
+            });
+            
+            it("should hold 'description'", function(){
+                expect($(".code .circle .description")).toExist();
+            });
+
+            describe("Names", function(){
+                it("should contain a single name", function(){        
+                    expect($(".code .circle .names .name")).toExist();
+                });
+
+                describe("name", function(){
+                    it("should be designated with 'c0'", function(){        
+                        expect($(".code .circle .names .name").text()).toBe("c0");
+                    });
+                });
+            });
+
+            describe("Description", function(){
+                it("should be designated with 'P0P1'", function(){        
+                    expect($(".code .circle .description").text()).toBe("P0P1");
                 });
             });
         });
