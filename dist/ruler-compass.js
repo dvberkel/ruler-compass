@@ -1,4 +1,4 @@
-/*! ruler-compass - v0.0.0 - 2013-01-11
+/*! ruler-compass - v0.0.0 - 2013-01-14
  * https://github.com/dvberkel/ruler-compass
  * Copyright (c) 2013 Daan van Berkel; Licensed MIT
  */
@@ -22,6 +22,11 @@ Geometry = {
         updateFromResult : function(attributes) {
             this.set(attributes);
             this.trigger("updatedFromResult");
+        },
+
+        updateFromCode : function(attributes) {
+            this.set(attributes);
+            this.trigger("updatedFromCode");
         }
     });
 
@@ -317,13 +322,18 @@ Geometry = {
 
         initialize : function(){
             this.render();
-            this.model.on("updatedFromResult", this.render, this);
         },
 
         render : function(){
             var container = this.container();
-            container.find(".x").text(this.model.get("x"));
-            container.find(".y").text(this.model.get("y"));
+            new CodeCoordinateView({ 
+                model : this.model, el : container.find(".x"), coordinate : "x"
+            });
+            new CodeCoordinateView({ 
+                model : this.model, el : container.find(".y"), coordinate : "y"
+            });
+            // container.find(".x").text(this.model.get("x"));
+            // container.find(".y").text(this.model.get("y"));
         },
 
         container : function(){
@@ -334,6 +344,58 @@ Geometry = {
             return this._container;
         }
     });
+
+    var CodeCoordinateView = Backbone.View.extend({
+        initialize : function(){
+            var self = this;
+            self.render();
+            self.model.on("updatedFromResult", self.render, self);
+            self.model.on("updatedFromCode", self.render, self);
+            var movementStart = 0; var modelStart = 0;
+            var handler = coordinateHandler(
+                function(event){ 
+                    movementStart = event.screenX; 
+                    modelStart = self.model.get(self.options.coordinate);
+                },
+                function(event){        
+                    var attributes = {};
+                    attributes[self.options.coordinate] = modelStart + (event.screenX - movementStart);
+                    self.model.updateFromCode(attributes); 
+                }
+            );
+            self.container().mousedown(handler);
+        },
+
+        render : function(){
+            var container = this.container();
+            container.empty().text(this.model.get(this.options.coordinate));
+        },
+
+        container : function(){
+            return this.$el;
+        }
+    });
+
+    var coordinateHandler = function(startHandler, moveHandler, finishHandler){
+        var doNothing = function(){};
+        startHandler = startHandler || doNothing;
+        moveHandler = moveHandler || doNothing;
+        finishHandler = finishHandler || doNothing;
+        var down = function(event){
+            $("body").on("mousemove", move);
+            $("body").on("mouseup", up);
+            startHandler.call(event, event);
+        };
+        var move = function(event){
+            moveHandler.call(event, event);
+        };
+        var up = function(event){
+            $("body").off("mousemove", move);
+            $("body").off("mouseup", up);
+            finishHandler.call(event, event);
+        };
+        return down;
+    };
 
     var CodeStepLineView = Backbone.View.extend({
         template : _.template("<span class='line'>l(<span class='reference-point'><%= P0 %></span>,<span class='reference-point'><%= P1 %></span>)</span>"),
@@ -465,6 +527,7 @@ Geometry = {
 
     var ResultStepFreePointView = Backbone.View.extend({
         initialize : function(){
+            this.model.on("updatedFromCode", this.render, this);
             this.render();
         },
 
@@ -520,8 +583,8 @@ Geometry = {
                     B : pointB,
                     paper : paper 
                 });
-                pointA.on("change:x, change:y", this.render, this);
-                pointB.on("change:x, change:y", this.render, this);
+                pointA.on("change", this.render, this);
+                pointB.on("change", this.render, this);
             }
             return this._line;
         },
@@ -539,7 +602,7 @@ Geometry = {
         var pointA = options.A;
         var pointB = options.B;
         var object = options.paper.path("M0,0L0,0").attr({ stroke : "black" });
-	object.node.setAttribute("class", "line");
+        object.node.setAttribute("class", "line");
 
         this.attr = function(attributes){
             object.attr(attributes);
@@ -574,8 +637,8 @@ Geometry = {
                     B : pointB,
                     paper : paper 
                 });
-                pointA.on("change:x, change:y", this.render, this);
-                pointB.on("change:x, change:y", this.render, this);
+                pointA.on("change", this.render, this);
+                pointB.on("change", this.render, this);
             }
             return this._circle;
         },
@@ -593,7 +656,7 @@ Geometry = {
         var pointA = options.A;
         var pointB = options.B;
         var object = options.paper.circle(0, 0, 10).attr({ stroke : "black" });
-	object.node.setAttribute("class", "circle");
+        object.node.setAttribute("class", "circle");
 
         this.attr = function(attributes){
             object.attr(attributes);

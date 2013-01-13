@@ -13,6 +13,11 @@
         updateFromResult : function(attributes) {
             this.set(attributes);
             this.trigger("updatedFromResult");
+        },
+
+        updateFromCode : function(attributes) {
+            this.set(attributes);
+            this.trigger("updatedFromCode");
         }
     });
 
