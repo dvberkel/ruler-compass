@@ -68,5 +68,5 @@ running the `npm test` (or equivalently `grunt jasmine`) often.
 [4]: https://npmjs.org/ "Node Package Manager homepage"
 [5]: http://gruntjs.com/ "grunt.js homepage"
 [6]: http://phantomjs.org "phantomjs homepage"
-[7]: http://pivotal.github.com/jasmine/ "Jasmine homepage"
+[7]: https://jasmine.github.io/ "Jasmine homepage"
 [8]: http://phantomjs.org/download.html "Download instructions for phantomjs"
